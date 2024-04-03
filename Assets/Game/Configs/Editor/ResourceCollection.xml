@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<UnityGameFramework>
+  <ResourceCollection>
+    <Resources>
+      <Resource Name="Hotfix/Res/Cube" LoadType="0" Packed="True" />
+      <Resource Name="Hotfix/Res/Cube_Red" LoadType="0" Packed="True" />
+      <Resource Name="Hotfix/Res/Dlls/Game" LoadType="0" Packed="True" />
+      <Resource Name="Hotfix/Res/Dlls/mscorlib" LoadType="0" Packed="True" />
+      <Resource Name="Hotfix/Res/Dlls/System" LoadType="0" Packed="True" />
+    </Resources>
+    <Assets>
+      <Asset Guid="2da6d7ec7479cd745a6eb8de55d24059" ResourceName="Hotfix/Res/Dlls/Game" />
+      <Asset Guid="501764066d7f70840bfa62d0803d0241" ResourceName="Hotfix/Res/Cube" />
+      <Asset Guid="6dc83f5fd45e0f44ba41cf75cbea9ed9" ResourceName="Hotfix/Res/Cube_Red" />
+      <Asset Guid="8b5f9a1ad07322444bbe74e94902d4eb" ResourceName="Hotfix/Res/Cube_Red" />
+      <Asset Guid="9ce7e43e8907e954caa7112b8f944548" ResourceName="Hotfix/Res/Dlls/System" />
+      <Asset Guid="a38c2abfa6e10c74ebe1c4f68b6915e1" ResourceName="Hotfix/Res/Dlls/System" />
+      <Asset Guid="fa5405076dfa73a40b4d339fdbeeb0bb" ResourceName="Hotfix/Res/Dlls/mscorlib" />
+    </Assets>
+  </ResourceCollection>
+</UnityGameFramework>

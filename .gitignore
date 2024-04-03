@@ -4,6 +4,7 @@
 /[Bb]uild/
 /[Bb]uilds/
 /[Ll]ogs/
+/[Hh]ybridCLRData/
 /Assets/AssetStoreTools*
 /.vs/
 

@@ -1,0 +1,10 @@
+{
+  "GameVersion": "1.0",
+  "InternalGameVersion": 0,
+  "HotUpdateUrl": "http://192.168.24.172:8000",
+  "WindowsAppUrl": "",
+  "MacOSAppUrl": "",
+  "IOSAppUrl": "",
+  "AndroidAppUrl": "",
+  "END_OF_JSON": ""
+}

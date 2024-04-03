@@ -22,6 +22,7 @@ namespace UnityGameFramework.Editor
             "UnityGameFramework.Runtime",
 #endif
             "Assembly-CSharp",
+            "Game.Main",     //TODO: ADD My Runtime Assembly
         };
 
         private static readonly string[] RuntimeOrEditorAssemblyNames =
@@ -34,6 +35,8 @@ namespace UnityGameFramework.Editor
             "UnityGameFramework.Editor",
 #endif
             "Assembly-CSharp-Editor",
+
+            "Game.Editor",//TODO: ADD My Editor Assembly
         };
 
         /// <summary>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<linker>
+  <assembly fullname="Game.Main">
+    <type fullname="Game.GameEntry" preserve="all" />
+  </assembly>
+  <assembly fullname="GameFramework">
+    <type fullname="GameFramework.Resource.LoadAssetCallbacks" preserve="all" />
+    <type fullname="GameFramework.Resource.LoadAssetFailureCallback" preserve="all" />
+    <type fullname="GameFramework.Resource.LoadAssetSuccessCallback" preserve="all" />
+    <type fullname="GameFramework.Resource.LoadAssetUpdateCallback" preserve="all" />
+    <type fullname="GameFramework.Resource.LoadResourceStatus" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityEngine.CoreModule">
+    <type fullname="UnityEngine.GameObject" preserve="all" />
+    <type fullname="UnityEngine.Object" preserve="all" />
+  </assembly>
+  <assembly fullname="UnityGameFramework.Runtime">
+    <type fullname="UnityGameFramework.Runtime.Log" preserve="all" />
+    <type fullname="UnityGameFramework.Runtime.ResourceComponent" preserve="all" />
+  </assembly>
+  <assembly fullname="mscorlib">
+    <type fullname="System.Diagnostics.DebuggableAttribute" preserve="all" />
+    <type fullname="System.Diagnostics.DebuggableAttribute/DebuggingModes" preserve="all" />
+    <type fullname="System.Object" preserve="all" />
+    <type fullname="System.Runtime.CompilerServices.CompilationRelaxationsAttribute" preserve="all" />
+    <type fullname="System.Runtime.CompilerServices.CompilerGeneratedAttribute" preserve="all" />
+    <type fullname="System.Runtime.CompilerServices.RuntimeCompatibilityAttribute" preserve="all" />
+    <type fullname="System.RuntimeTypeHandle" preserve="all" />
+    <type fullname="System.Single" preserve="all" />
+    <type fullname="System.Type" preserve="all" />
+  </assembly>
+</linker>
