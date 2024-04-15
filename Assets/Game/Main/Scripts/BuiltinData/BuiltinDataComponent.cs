@@ -38,8 +38,6 @@ namespace Game.Main
             }
 
             m_BuildInfo = Utility.Json.ToObject<BuildInfo>(m_BuildInfoTextAsset.text);
-            Debug.Log("==================");
-            Debug.Log(m_BuildInfo);
             if (m_BuildInfo == null)
             {
                 Log.Warning("Parse build info failure.");

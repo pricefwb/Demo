@@ -33,7 +33,7 @@ namespace Game.Main
                 return;
             }
 
-            ChangeState<ProcedureInitCode>(procedureOwner);
+            ChangeState<ProcedureLoadAssembly>(procedureOwner);
         }
 
         private void OnInitResourcesComplete()

@@ -40,7 +40,7 @@ namespace Game.Main
             }
             else
             {
-                ChangeState<ProcedureInitCode>(procedureOwner);
+                ChangeState<ProcedureLoadAssembly>(procedureOwner);
             }
         }
 

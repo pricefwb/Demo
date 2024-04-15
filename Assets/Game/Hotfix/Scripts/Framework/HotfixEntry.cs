@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Fsm;
 using GameFramework.Procedure;
 using GameFramework.Resource;
 using UnityEngine;
 using UnityGameFramework.Runtime;
+using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
 namespace Game.Hotfix
 {
@@ -12,6 +14,25 @@ namespace Game.Hotfix
         public static void Start()
         {
             Log.Debug("Hotfix Start");
+
+            List<string> aotAssemblyList = new List<string>
+            {
+                "UnityEngine.CoreModule.dll",
+            };
+            Log.Debug(aotAssemblyList);
+
+            List<GameFrameworkLogLevel> gameFrameworkLogLevels = new List<GameFrameworkLogLevel>
+            {
+                GameFrameworkLogLevel.Debug,
+                GameFrameworkLogLevel.Info,
+                GameFrameworkLogLevel.Warning,
+                GameFrameworkLogLevel.Error,
+                GameFrameworkLogLevel.Fatal,
+            };
+            Log.Debug(gameFrameworkLogLevels);
+
+            var a = GameEntry.DataNode.GetData<Variable>("");
+
 
             GameEntry.Resource.LoadAsset("Assets/Game/Hotfix/Res/Cube.prefab", typeof(GameObject), new LoadAssetCallbacks(
                 (assetName, asset, duration, userData) =>
