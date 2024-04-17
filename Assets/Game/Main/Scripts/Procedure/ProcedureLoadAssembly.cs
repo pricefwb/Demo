@@ -154,7 +154,6 @@ namespace Game.Main
             }
             m_IsStarted = true;
 
-            Debug.Log("Hotfix Start======>>>>>>>>>>>>");
             var hotfixMain = m_MainHotfixAssembly.GetType("Game.Hotfix.HotfixEntry");
             Debug.Log(hotfixMain);
             var main = hotfixMain.GetMethod("Start");

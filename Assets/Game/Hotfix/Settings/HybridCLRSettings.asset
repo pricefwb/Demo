@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HybridCLRSettings
   m_EditorClassIdentifier: 
   Enable: 1
-  HotfixMainDllName: Game.Hotfix
+  HotfixMainAssemblyName: Game.Hotfix
   HotfixEntryClass: Cactus.HotfixEntry
   HotfixEntryMethod: Entrance
   HotfixAssemblies:

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Game.Editor
 {
@@ -75,6 +77,23 @@ namespace Game.Editor
                 }
                 File.Copy(srcFilePath, targetFilePath, true);
                 return true;
+            }
+
+            public static void SaveFileSafe(string filePath, string text)
+            {
+                var dictionary = Path.GetDirectoryName(filePath);
+                UnityEngine.Debug.Log("==========================================");
+                UnityEngine.Debug.Log(dictionary);
+                CreateDirectory(dictionary);
+
+                using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    UTF8Encoding utf8Encoding = new UTF8Encoding(false);
+                    using (StreamWriter writer = new StreamWriter(stream, utf8Encoding))
+                    {
+                        writer.Write(text);
+                    }
+                }
             }
         }
     }

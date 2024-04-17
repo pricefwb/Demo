@@ -5,6 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using Game.Editor.ResourceTools;
 using Game.Main;
 using GameFramework;
 using System.IO;
@@ -16,18 +17,9 @@ namespace Game.Editor
 {
     public sealed class GameBuildEventHandler : IBuildEventHandler
     {
-        private string m_GameVersion;
-        private int m_InternalResourceVersion;
-        private string m_OutputDirectory;
-
-        public bool ContinueOnFailure
-        {
-            get
-            {
-                return false;
-            }
-        }
-
+        public bool ContinueOnFailure => false;
+        private VersionInfo m_VersionInfo = new VersionInfo();
+        private string m_OutputDirectory = "";
         private string GetHotUpdateUrl()
         {
             string buildInfoPath = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Runtime/BuildInfo.txt"));
@@ -71,23 +63,9 @@ namespace Game.Editor
             Platform platforms, AssetBundleCompressionType assetBundleCompression, string compressionHelperTypeName, bool additionalCompressionSelected, bool forceRebuildAssetBundleSelected, string buildEventHandlerTypeName, string outputDirectory, BuildAssetBundleOptions buildAssetBundleOptions,
             string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath, string buildReportPath)
         {
-            m_GameVersion = applicableGameVersion;
-            m_InternalResourceVersion = internalResourceVersion;
+            m_VersionInfo.LatestGameVersion = applicableGameVersion;
+            m_VersionInfo.InternalGameVersion = internalResourceVersion;
             m_OutputDirectory = outputDirectory;
-
-            // string streamingAssetsPath = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "StreamingAssets"));
-            // string[] fileNames = Directory.GetFiles(streamingAssetsPath, "*", SearchOption.AllDirectories);
-            // foreach (string fileName in fileNames)
-            // {
-            //     if (fileName.Contains(".gitkeep"))
-            //     {
-            //         continue;
-            //     }
-
-            //     File.Delete(fileName);
-            // }
-
-            // Utility.Path.RemoveEmptyDirectory(streamingAssetsPath);
         }
 
         /// <summary>
@@ -104,9 +82,13 @@ namespace Game.Editor
 
         public void OnPreprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath)
         {
-#if ENABLE_HYBRID_CLR_UNITY
-        HybridCLRUtility.OnPreprocessPlatform(platform);
-#endif
+            // #if ENABLE_HYBRID_CLR_UNITY
+
+            // #endif
+
+            // HybridCLRUtility.Builder.Build(UtilityEditor.GetBuildTarget(platform));
+            // ResourceRuleEditorUtility.RefreshResourceCollection();
+
         }
 
         /// <summary>
@@ -126,29 +108,24 @@ namespace Game.Editor
             Debug.Log("OnBuildAssetBundlesComplete");
         }
 
-        public void OnOutputUpdatableVersionListData(Platform platform, string versionListPath, int versionListLength, int versionListHashCode, int versionListCompressedLength, int versionListCompressedHashCode)
+
+        public void OnOutputUpdatableVersionListData(Platform platform, string versionListPath, int versionListLength,
+            int versionListHashCode, int VersionListCompressedLength, int VersionListCompressedHashCode)
         {
-            Debug.Log("OnOutputUpdatableVersionListData");
-            string platformPath = GetPlatformPath(platform);
-            string gameVersion = m_GameVersion.Replace('.', '_');
+            m_VersionInfo.VersionListLength = versionListLength;
+            m_VersionInfo.VersionListHashCode = versionListHashCode;
+            m_VersionInfo.VersionListCompressedLength = VersionListCompressedLength;
+            m_VersionInfo.VersionListCompressedHashCode = VersionListCompressedHashCode;
+            string platformName = UtilityEditor.GetPlatformName(platform);
+            string gameVersion = m_VersionInfo.LatestGameVersion.Replace('.', '_');
 
-            VersionInfo versionInfo = new VersionInfo
-            {
-                ForceUpdateGame = false,
-                UpdatePrefixUri = string.Format("{0}/Full/{1}_{2}/{3}", GetHotUpdateUrl(), gameVersion, m_InternalResourceVersion.ToString(), platformPath),
-                LatestGameVersion = m_GameVersion,
-                InternalGameVersion = 1,
-                InternalResourceVersion = m_InternalResourceVersion,
-                VersionListLength = versionListLength,
-                VersionListHashCode = versionListHashCode,
-                VersionListCompressedLength = versionListCompressedLength,
-                VersionListCompressedHashCode = versionListCompressedHashCode,
-            };
-            string versionJson = LitJson.JsonMapper.ToJson(versionInfo);
-            IOUtility.SaveFileSafe(m_OutputDirectory, platformPath + "Version.txt", versionJson);
+            m_VersionInfo.UpdatePrefixUri = string.Format("{0}/Full/{1}_{2}/{3}", GetHotUpdateUrl(), gameVersion, m_VersionInfo.InternalGameVersion, platformName);
+            string versionJson = LitJson.JsonMapper.ToJson(m_VersionInfo);
+            UtilityEditor.IO.SaveFileSafe(Path.Combine(m_OutputDirectory, platformName + "Version.txt"), versionJson);
 
-            Debug.LogFormat("Version save success. \n length is {0} , hash code is {1} . \n compressed length is {2} , compressed hash code is {3} . \n list path is {4} \n ", versionListLength, versionListHashCode, versionListCompressedLength, versionListCompressedHashCode, versionListPath);
+            Debug.Log("Version save success");
         }
+
 
         /// <summary>
         /// 所有平台生成结束后的后处理事件。
@@ -199,6 +176,7 @@ namespace Game.Editor
         public void OnPostprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath, bool isSuccess)
         {
             Debug.Log("OnPostprocessPlatform");
+
             //拷贝AB 倒项目的 StreamingAssets 目录
             // if (!outputPackageSelected)
             // {
@@ -223,45 +201,6 @@ namespace Game.Editor
 
             //     File.Copy(fileName, destFileName);
             // }
-        }
-
-        /// <summary>
-        /// 由 UnityGameFramework.Editor.ResourceTools.Platform 得到 平台标识符。
-        /// </summary>
-        /// <param name="platform">UnityGameFramework.Editor.ResourceTools.Platform。</param>
-        /// <returns>平台标识符。</returns>
-        public string GetPlatformPath(Platform platform)
-        {
-            // 这里和 ProcedureVersionCheck.GetPlatformPath() 对应。
-            // 使用 平台标识符 关联 UnityEngine.RuntimePlatform 和 UnityGameFramework.Editor.ResourceTools.Platform
-            switch (platform)
-            {
-                case Platform.Windows:
-                    return "Windows";
-                case Platform.Windows64:
-                    return "Windows64";
-
-                case Platform.MacOS:
-                    return "MacOS";
-
-                case Platform.IOS:
-                    return "IOS";
-
-                case Platform.Android:
-                    return "Android";
-
-                case Platform.WindowsStore:
-                    return "WSA";
-
-                case Platform.WebGL:
-                    return "WebGL";
-
-                case Platform.Linux:
-                    return "Linux";
-
-                default:
-                    throw new GameFrameworkException("Platform is invalid.");
-            }
         }
     }
 }

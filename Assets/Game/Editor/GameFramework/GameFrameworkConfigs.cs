@@ -16,15 +16,15 @@ namespace Game.Editor
     public static class GameFrameworkConfigs
     {
         [BuildSettingsConfigPath]
-        public static string BuildSettingsConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Editor/BuildSettings.xml"));
+        public static string BuildSettingsConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Editor/Configs/BuildSettings.xml"));
 
         [ResourceCollectionConfigPath]
-        public static string ResourceCollectionConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Editor/ResourceCollection.xml"));
+        public static string ResourceCollectionConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Editor/Configs/ResourceCollection.xml"));
 
         [ResourceEditorConfigPath]
-        public static string ResourceEditorConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Editor/ResourceEditor.xml"));
+        public static string ResourceEditorConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Editor/Configs/ResourceEditor.xml"));
 
         [ResourceBuilderConfigPath]
-        public static string ResourceBuilderConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Editor/ResourceBuilder.xml"));
+        public static string ResourceBuilderConfig = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Editor/Configs/ResourceBuilder.xml"));
     }
 }

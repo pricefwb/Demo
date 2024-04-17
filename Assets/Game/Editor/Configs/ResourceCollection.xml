@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<UnityGameFramework>
+  <ResourceCollection>
+    <Resources>
+      <Resource Name="Assemblies" LoadType="0" Packed="True" />
+      <Resource Name="Res" LoadType="0" Packed="True" />
+    </Resources>
+    <Assets>
+      <Asset Guid="3d544105a748bee41a92bc7c8367ec4b" ResourceName="Assemblies" />
+      <Asset Guid="409f3a008924e2d4a977e121e0d7dbde" ResourceName="Assemblies" />
+      <Asset Guid="46f51e9e9690c714b993f80f86e885ad" ResourceName="Assemblies" />
+      <Asset Guid="501764066d7f70840bfa62d0803d0241" ResourceName="Res" />
+      <Asset Guid="6dc83f5fd45e0f44ba41cf75cbea9ed9" ResourceName="Res" />
+      <Asset Guid="8b5f9a1ad07322444bbe74e94902d4eb" ResourceName="Res" />
+      <Asset Guid="bee40e17502df53468a56405bf33a170" ResourceName="Assemblies" />
+      <Asset Guid="d587dc76e07962345839b394d18137be" ResourceName="Assemblies" />
+    </Assets>
+  </ResourceCollection>
+</UnityGameFramework>
