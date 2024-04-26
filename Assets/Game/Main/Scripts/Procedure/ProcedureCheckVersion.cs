@@ -32,9 +32,8 @@ namespace Game.Main
             GameEntry.Event.Subscribe(WebRequestSuccessEventArgs.EventId, OnWebRequestSuccess);
             GameEntry.Event.Subscribe(WebRequestFailureEventArgs.EventId, OnWebRequestFailure);
 
-            // 向服务器请求版本信息
-            string checkVersionUrl = Utility.Text.Format("{0}/{1}Version.txt", GameEntry.BuiltinData.BuildInfo.HotUpdateUrl, GetPlatformPath());
-            Debug.Log(checkVersionUrl);
+            string checkVersionUrl = Utility.Text.Format("{0}/{1}", GameEntry.BuiltinData.BuildInfo.GetHotfixUrl(), GameEntry.BuiltinData.BuildInfo.VersionFile);
+            Debug.Log($"checkVersionUrl {checkVersionUrl}");
             GameEntry.WebRequest.AddWebRequest(checkVersionUrl, this);
         }
 
@@ -69,24 +68,6 @@ namespace Game.Main
             }
         }
 
-        private void GotoUpdateApp(object userData)
-        {
-            string url = null;
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            url = GameEntry.BuiltinData.BuildInfo.WindowsAppUrl;
-#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
-            url = GameEntry.BuiltinData.BuildInfo.MacOSAppUrl;
-#elif UNITY_IOS
-            url = GameEntry.BuiltinData.BuildInfo.IOSAppUrl;
-#elif UNITY_ANDROID
-            url = GameEntry.BuiltinData.BuildInfo.AndroidAppUrl;
-#endif
-            if (!string.IsNullOrEmpty(url))
-            {
-                Application.OpenURL(url);
-            }
-        }
-
         private void OnWebRequestSuccess(object sender, GameEventArgs e)
         {
             WebRequestSuccessEventArgs ne = (WebRequestSuccessEventArgs)e;
@@ -107,25 +88,8 @@ namespace Game.Main
 
             Log.Info("Latest game version is '{0} ({1})', local game version is '{2} ({3})'.", m_VersionInfo.LatestGameVersion, m_VersionInfo.InternalGameVersion.ToString(), Version.GameVersion, Version.InternalGameVersion.ToString());
 
-            if (m_VersionInfo.ForceUpdateGame)
-            {
-                // 需要强制更新游戏应用
-                // GameEntry.UI.OpenDialog(new DialogParams
-                // {
-                //     Mode = 2,
-                //     Title = GameEntry.Localization.GetString("ForceUpdate.Title"),
-                //     Message = GameEntry.Localization.GetString("ForceUpdate.Message"),
-                //     ConfirmText = GameEntry.Localization.GetString("ForceUpdate.UpdateButton"),
-                //     OnClickConfirm = GotoUpdateApp,
-                //     CancelText = GameEntry.Localization.GetString("ForceUpdate.QuitButton"),
-                //     OnClickCancel = delegate (object userData) { UnityGameFramework.Runtime.GameEntry.Shutdown(ShutdownType.Quit); },
-                // });
-
-                return;
-            }
-
             // 设置资源更新下载地址
-            GameEntry.Resource.UpdatePrefixUri = Utility.Path.GetRegularPath(m_VersionInfo.UpdatePrefixUri);
+            GameEntry.Resource.UpdatePrefixUri = GameEntry.BuiltinData.BuildInfo.GetHotfixUrl();
 
             m_CheckVersionComplete = true;
             m_NeedUpdateVersion = GameEntry.Resource.CheckVersionList(m_VersionInfo.InternalResourceVersion) == CheckVersionListResult.NeedUpdate;
@@ -142,27 +106,21 @@ namespace Game.Main
             Log.Warning("Check version failure, error message is '{0}'.", ne.ErrorMessage);
         }
 
-        private string GetPlatformPath()
+        private void GotoUpdateApp(object userData)
         {
-            switch (Application.platform)
+            string url = null;
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+            url = GameEntry.BuiltinData.BuildInfo.WindowsAppUrl;
+#elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
+            url = GameEntry.BuiltinData.BuildInfo.MacOSAppUrl;
+#elif UNITY_IOS
+            url = GameEntry.BuiltinData.BuildInfo.IOSAppUrl;
+#elif UNITY_ANDROID
+            url = GameEntry.BuiltinData.BuildInfo.AndroidAppUrl;
+#endif
+            if (!string.IsNullOrEmpty(url))
             {
-                case RuntimePlatform.WindowsEditor:
-                case RuntimePlatform.WindowsPlayer:
-                    //return "Windows";
-                    //TODO
-                    return "Windows64";
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
-                    return "MacOS";
-
-                case RuntimePlatform.IPhonePlayer:
-                    return "IOS";
-
-                case RuntimePlatform.Android:
-                    return "Android";
-
-                default:
-                    throw new System.NotSupportedException(Utility.Text.Format("Platform '{0}' is not supported.", Application.platform));
+                Application.OpenURL(url);
             }
         }
     }

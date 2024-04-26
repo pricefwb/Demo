@@ -9,6 +9,21 @@ namespace Game.Editor
     {
         public static class IO
         {
+            public static bool ClearFolder(string path)
+            {
+                var di = new DirectoryInfo(path);
+                if (!di.Exists) return false;
+                foreach (var file in di.GetFiles())
+                {
+                    file.Delete();
+                }
+                foreach (var dir in di.GetDirectories())
+                {
+                    dir.Delete(true);
+                }
+                return true;
+            }
+
             public static bool IsDirectoryExists(string directoryPath)
             {
                 return Directory.Exists(directoryPath);
@@ -82,8 +97,6 @@ namespace Game.Editor
             public static void SaveFileSafe(string filePath, string text)
             {
                 var dictionary = Path.GetDirectoryName(filePath);
-                UnityEngine.Debug.Log("==========================================");
-                UnityEngine.Debug.Log(dictionary);
                 CreateDirectory(dictionary);
 
                 using (FileStream stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))

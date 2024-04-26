@@ -37,7 +37,8 @@ namespace Game.Hotfix
             GameEntry.Resource.LoadAsset("Assets/Game/Hotfix/Res/Cube.prefab", typeof(GameObject), new LoadAssetCallbacks(
                 (assetName, asset, duration, userData) =>
                 {
-                    GameObject.Instantiate(asset as GameObject);
+                    var go = GameObject.Instantiate(asset as GameObject);
+                    go.transform.position = new Vector3(0, -1, 0);
                 },
                 (assetName, status, errorMessage, userData) =>
                 {

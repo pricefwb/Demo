@@ -17,21 +17,9 @@ namespace Game.Editor
 {
     public sealed class GameBuildEventHandler : IBuildEventHandler
     {
+        private readonly string CommitResourcesPath = Application.dataPath + $"/../CommitResources/";
         public bool ContinueOnFailure => false;
         private VersionInfo m_VersionInfo = new VersionInfo();
-        private string m_OutputDirectory = "";
-        private string GetHotUpdateUrl()
-        {
-            string buildInfoPath = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "Game/Configs/Runtime/BuildInfo.txt"));
-            if (!File.Exists(buildInfoPath))
-            {
-                Debug.LogError("Build info can not be found");
-                return "";
-            }
-
-            BuildInfo buildInfo = LitJson.JsonMapper.ToObject<BuildInfo>(File.ReadAllText(buildInfoPath));
-            return buildInfo.HotUpdateUrl;
-        }
 
         /// <summary>
         /// 所有平台生成开始前的预处理事件。
@@ -65,7 +53,8 @@ namespace Game.Editor
         {
             m_VersionInfo.LatestGameVersion = applicableGameVersion;
             m_VersionInfo.InternalGameVersion = internalResourceVersion;
-            m_OutputDirectory = outputDirectory;
+
+            ResourceRuleEditorUtility.RefreshResourceCollection();
         }
 
         /// <summary>
@@ -82,13 +71,11 @@ namespace Game.Editor
 
         public void OnPreprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath)
         {
-            // #if ENABLE_HYBRID_CLR_UNITY
-
-            // #endif
-
-            // HybridCLRUtility.Builder.Build(UtilityEditor.GetBuildTarget(platform));
-            // ResourceRuleEditorUtility.RefreshResourceCollection();
-
+            if (HybridCLR.Editor.SettingsUtil.Enable)
+            {
+                HybridCLRUtility.Builder.Build(UtilityEditor.GetBuildTarget(platform));
+                ResourceRuleEditorUtility.RefreshResourceCollection();
+            }
         }
 
         /// <summary>
@@ -116,14 +103,6 @@ namespace Game.Editor
             m_VersionInfo.VersionListHashCode = versionListHashCode;
             m_VersionInfo.VersionListCompressedLength = VersionListCompressedLength;
             m_VersionInfo.VersionListCompressedHashCode = VersionListCompressedHashCode;
-            string platformName = UtilityEditor.GetPlatformName(platform);
-            string gameVersion = m_VersionInfo.LatestGameVersion.Replace('.', '_');
-
-            m_VersionInfo.UpdatePrefixUri = string.Format("{0}/Full/{1}_{2}/{3}", GetHotUpdateUrl(), gameVersion, m_VersionInfo.InternalGameVersion, platformName);
-            string versionJson = LitJson.JsonMapper.ToJson(m_VersionInfo);
-            UtilityEditor.IO.SaveFileSafe(Path.Combine(m_OutputDirectory, platformName + "Version.txt"), versionJson);
-
-            Debug.Log("Version save success");
         }
 
 
@@ -175,32 +154,16 @@ namespace Game.Editor
         /// <param name="isSuccess">是否生成成功。</param>
         public void OnPostprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath, bool isSuccess)
         {
-            Debug.Log("OnPostprocessPlatform");
+            string platformName = UtilityEditor.GetPlatformName(platform);
+            string commitPath = Path.Combine(CommitResourcesPath, platformName);
+            UtilityEditor.IO.EnsureDirectoryExistsAndEmpty(commitPath);
+            UtilityEditor.IO.CopyDirectory(outputFullPath, commitPath);
 
-            //拷贝AB 倒项目的 StreamingAssets 目录
-            // if (!outputPackageSelected)
-            // {
-            //     return;
-            // }
+            string versionJson = LitJson.JsonMapper.ToJson(m_VersionInfo);
+            string versionPath = Path.Combine(commitPath, UtilityEditor.Settings.BuildInfoSettings.VersionFile);
+            UtilityEditor.IO.SaveFileSafe(versionPath, versionJson);
 
-            // if (platform != Platform.Windows && platform != Platform.Windows64)
-            // {
-            //     return;
-            // }
-
-            // string streamingAssetsPath = Utility.Path.GetRegularPath(Path.Combine(Application.dataPath, "StreamingAssets"));
-            // string[] fileNames = Directory.GetFiles(outputPackagePath, "*", SearchOption.AllDirectories);
-            // foreach (string fileName in fileNames)
-            // {
-            //     string destFileName = Utility.Path.GetRegularPath(Path.Combine(streamingAssetsPath, fileName.Substring(outputPackagePath.Length)));
-            //     FileInfo destFileInfo = new FileInfo(destFileName);
-            //     if (destFileInfo.Directory != null && !destFileInfo.Directory.Exists)
-            //     {
-            //         destFileInfo.Directory.Create();
-            //     }
-
-            //     File.Copy(fileName, destFileName);
-            // }
+            Debug.Log("更新资源文件拷贝完毕！");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Game.Editor
             {
                 CompileDllCommand.CompileDll(target);
 
-                CollectAssemblies.CollectAOTMetaAssemblies(target);
+                SyncSettings.SyncAll(target);
 
                 CopyAssemblies.CopyHotfixAndAOTAssemblies(target);
 

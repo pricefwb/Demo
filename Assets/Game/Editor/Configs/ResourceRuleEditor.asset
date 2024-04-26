@@ -33,3 +33,13 @@ MonoBehaviour:
     packed: 1
     filterType: 0
     searchPatterns: '*.*'
+  - valid: 1
+    name: Configs
+    variant: 
+    fileSystem: 
+    groups: 
+    assetsDirectoryPath: Assets/Game/Hotfix/Configs
+    loadType: 0
+    packed: 1
+    filterType: 0
+    searchPatterns: '*.*'

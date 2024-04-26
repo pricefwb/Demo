@@ -16,6 +16,8 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// }} 
 
 	// {{ AOT generic types
+	// System.Action<byte>
+	// System.Action<object>
 	// System.Collections.Generic.ArraySortHelper<byte>
 	// System.Collections.Generic.ArraySortHelper<object>
 	// System.Collections.Generic.Comparer<byte>
@@ -28,12 +30,16 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerable<object>
 	// System.Collections.Generic.IEnumerator<byte>
 	// System.Collections.Generic.IEnumerator<object>
+	// System.Collections.Generic.IList<byte>
+	// System.Collections.Generic.IList<object>
 	// System.Collections.Generic.List.Enumerator<byte>
 	// System.Collections.Generic.List.Enumerator<object>
 	// System.Collections.Generic.List<byte>
 	// System.Collections.Generic.List<object>
 	// System.Collections.Generic.ObjectComparer<byte>
 	// System.Collections.Generic.ObjectComparer<object>
+	// System.Collections.ObjectModel.ReadOnlyCollection<byte>
+	// System.Collections.ObjectModel.ReadOnlyCollection<object>
 	// System.Comparison<byte>
 	// System.Comparison<object>
 	// System.Predicate<byte>

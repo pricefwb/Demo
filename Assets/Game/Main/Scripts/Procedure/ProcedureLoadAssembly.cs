@@ -8,42 +8,32 @@ using GameFramework.Resource;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 using System;
+using UnityEngine.Windows.Speech;
+using System.Collections.Generic;
 
 namespace Game.Main
 {
     public class ProcedureLoadAssembly : ProcedureBase
     {
         HybridCLRSettings m_HybridCLRSettings = null;
-        Assembly m_MainHotfixAssembly = null;
-        int m_LoadingAssemblyNum = -1;
-        bool m_IsStarted = false;
+        Dictionary<string, TextAsset> m_AssemblyAssetDict = new Dictionary<string, TextAsset>();
 
         void Clear()
         {
-            m_LoadingAssemblyNum = -1;
-            m_MainHotfixAssembly = null;
+            m_AssemblyAssetDict.Clear();
             m_HybridCLRSettings = null;
-            m_IsStarted = false;
         }
 
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             base.OnEnter(procedureOwner);
 
-            GameEntry.Resource.LoadAsset(UtilityGame.Asset.GetSettingAsset("HybridCLRSettings"), typeof(HybridCLRSettings), new LoadAssetCallbacks(OnLoadHybridCLRSettingsSuccess, OnLoadAssetFail));
+            LoadHybridCLRSettings();
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
-
-            if (m_HybridCLRSettings == null) return;
-
-            if (m_MainHotfixAssembly == null) return;
-
-            if (m_LoadingAssemblyNum != 0) return;
-
-            Start();
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
@@ -53,8 +43,12 @@ namespace Game.Main
             Clear();
         }
 
+        void OnLoadAssetFail(string assetName, LoadResourceStatus status, string errorMessage, object userData)
+        {
+            Log.Error($"LoadAssetFailure, assetName: [ {assetName} ], status: [ {status} ], errorMessage: [ {errorMessage} ], userData: [ {userData} ]");
+        }
 
-        bool NeedLoadAssemblies()
+        bool IsHybridCLREnable()
         {
 #if UNITY_EDITOR
             return false;
@@ -63,102 +57,118 @@ namespace Game.Main
 #endif
         }
 
-        void LoadAssemblies()
+        //STEP1
+        void LoadHybridCLRSettings()
         {
-            m_LoadingAssemblyNum = 0;
+            GameEntry.Resource.LoadAsset(UtilityGame.Asset.GetHybridCLRSettingsAsset(), typeof(HybridCLRSettings), new LoadAssetCallbacks(OnLoadHybridCLRSettingsSuccess, OnLoadAssetFail));
+        }
 
-            if (!NeedLoadAssemblies())
-            {
-                m_MainHotfixAssembly = System.AppDomain.CurrentDomain.GetAssemblies().First(assembly => assembly.GetName().Name == m_HybridCLRSettings.HotfixMainAssemblyName);
-            }
-            else
+        void OnLoadHybridCLRSettingsSuccess(string assetName, object asset, float duration, object userData)
+        {
+            m_HybridCLRSettings = (HybridCLRSettings)asset;
+
+            LoadAssemblyAssets();
+        }
+
+        //STEP2
+        void LoadAssemblyAssets()
+        {
+            if (IsHybridCLREnable())
             {
                 foreach (string name in m_HybridCLRSettings.HotfixAssemblies)
                 {
-                    m_LoadingAssemblyNum++;
-                    string assetName = Utility.Text.Format("{0}/{1}.bytes", name);
-                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadHotfixAssemblySuccess, OnLoadAssetFail), name);
+                    string assetName = Utility.Text.Format("{0}/{1}{2}", m_HybridCLRSettings.HotfixAssembliesDirectory, name, m_HybridCLRSettings.AssemblyAssetExtension);
+                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
                 }
 
                 foreach (string name in m_HybridCLRSettings.AOTMetaAssemblies)
                 {
-                    m_LoadingAssemblyNum++;
-                    string assetName = Utility.Text.Format("{0}/{1}.bytes", name);
-                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAOTMetaAssemblySuccess, OnLoadAssetFail), name);
+                    string assetName = Utility.Text.Format("{0}/{1}{2}", m_HybridCLRSettings.AOTMetaAssembliesDirectory, name, m_HybridCLRSettings.AssemblyAssetExtension);
+                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
                 }
-
+            }
+            else
+            {
+                LoadAssemblies();
             }
         }
 
-        private void OnLoadHybridCLRSettingsSuccess(string assetName, object asset, float duration, object userData)
+        void OnLoadAssemblyAssetSuccess(string assetName, object asset, float duration, object userData)
         {
-            m_HybridCLRSettings = (HybridCLRSettings)asset;
+            Log.Debug($"LoadAssemblyAsset, assetName: [ {assetName} ], duration: [ {duration} ], userData: [ {userData} ]");
 
-            LoadAssemblies();
-        }
+            m_AssemblyAssetDict.Add(userData as string, asset as TextAsset);
 
-        private void OnLoadAOTMetaAssemblySuccess(string assetName, object asset, float duration, object userData)
-        {
-            Log.Debug($"LoadAOTDllSuccess, assetName: [ {assetName} ], duration: [ {duration} ], userData: [ {userData} ]");
-
-            try
+            if (m_AssemblyAssetDict.Count == m_HybridCLRSettings.HotfixAssemblies.Count + m_HybridCLRSettings.AOTMetaAssemblies.Count)
             {
-                TextAsset dll = (TextAsset)asset;
-                // 加载assembly对应的dll，会自动为它hook。一旦aot泛型函数的native函数不存在，用解释器版本代码
-                var err = RuntimeApi.LoadMetadataForAOTAssembly(dll.bytes, HomologousImageMode.SuperSet);
-                Log.Info($"LoadMetadataForAOTAssembly:{assetName}. ret:{err}");
-                m_LoadingAssemblyNum--;
-            }
-            catch (System.Exception e)
-            {
-                Log.Error(e.Message);
-                throw;
+                LoadAssemblies();
             }
         }
-        private void OnLoadHotfixAssemblySuccess(string assetName, object asset, float duration, object userData)
-        {
-            Log.Debug($"LoadHotfixDllSuccess, assetName: [ {assetName} ], duration: [ {duration} ], userData: [ {userData} ]");
 
-            try
+        //STEP3
+        void LoadAssemblies()
+        {
+            Assembly mainAssembly = null;
+            var mainAssemblyName = m_HybridCLRSettings.HotfixMainAssemblyName;
+            if (!IsHybridCLREnable())
             {
-                TextAsset dll = (TextAsset)asset;
-                Assembly assembly = Assembly.Load(dll.bytes);
-                if (string.Compare(Utility.Text.Format("{0}.bytes", m_HybridCLRSettings.HotfixMainAssemblyName), userData as string, StringComparison.Ordinal) == 0)
+                mainAssembly = System.AppDomain.CurrentDomain.GetAssemblies().First(assembly => assembly.GetName().Name == mainAssemblyName);
+            }
+            else
+            {
+                try
                 {
-                    m_MainHotfixAssembly = assembly;
+                    foreach (var AOTMetaName in m_HybridCLRSettings.AOTMetaAssemblies)
+                    {
+                        var dll = m_AssemblyAssetDict[AOTMetaName];
+                        var err = RuntimeApi.LoadMetadataForAOTAssembly(dll.bytes, HomologousImageMode.SuperSet);
+                        Log.Info($"LoadMetadataForAOTAssembly:{AOTMetaName}. ret:{err}");
+                    }
+
+                    foreach (var hotfixName in m_HybridCLRSettings.HotfixAssemblies)
+                    {
+                        var dll = m_AssemblyAssetDict[hotfixName];
+                        var assembly = Assembly.Load(dll.bytes);
+                        if (string.Compare(Utility.Text.Format("{0}.dll", mainAssemblyName), hotfixName, StringComparison.Ordinal) == 0)
+                        {
+                            mainAssembly = assembly;
+                        }
+                    }
                 }
-                m_LoadingAssemblyNum--;
+                catch (System.Exception e)
+                {
+                    Log.Error(e.Message);
+                    throw;
+                }
             }
-            catch (System.Exception e)
-            {
-                Log.Error(e.Message);
-                throw;
-            }
+
+            StartGame(mainAssembly);
         }
 
-        private void OnLoadAssetFail(string assetName, LoadResourceStatus status, string errorMessage, object userData)
+        //STEP4
+        void StartGame(Assembly mainAssembly)
         {
-            Log.Error($"LoadAssetFailure, assetName: [ {assetName} ], status: [ {status} ], errorMessage: [ {errorMessage} ], userData: [ {userData} ]");
-        }
-
-        private void Start()
-        {
-            if (m_MainHotfixAssembly == null)
+            if (mainAssembly == null)
             {
-                Log.Error("MainHotfixAssembly is null");
+                Log.Error("Main logic assembly missing.");
                 return;
             }
-            if (m_IsStarted)
+
+            var mainClass = mainAssembly.GetType(m_HybridCLRSettings.HotfixEntryClass);
+            if (mainClass == null)
             {
+                Log.Error($"Main logic type '{m_HybridCLRSettings.HotfixEntryClass}' missing.");
                 return;
             }
-            m_IsStarted = true;
 
-            var hotfixMain = m_MainHotfixAssembly.GetType("Game.Hotfix.HotfixEntry");
-            Debug.Log(hotfixMain);
-            var main = hotfixMain.GetMethod("Start");
-            Debug.Log(main);
-            main?.Invoke(null, null);
+            var mainMethod = mainClass.GetMethod(m_HybridCLRSettings.HotfixEntryMethod);
+            if (mainMethod == null)
+            {
+                Log.Error($"Main logic entry method '{m_HybridCLRSettings.HotfixEntryMethod}' missing.");
+                return;
+            }
+
+            mainMethod?.Invoke(null, null);
         }
     }
 }

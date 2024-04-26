@@ -33,7 +33,7 @@ namespace Game.Editor
                 foreach (var assembly in assemblies)
                 {
                     var srcPath = Path.Combine(srcDir, assembly);
-                    var targetPath = Path.Combine(targetDir, $"{assembly}.bytes");
+                    var targetPath = Path.Combine(targetDir, $"{assembly}{UtilityEditor.Settings.HybridCLRSettings.AssemblyAssetExtension}");
                     var result = UtilityEditor.IO.CopyFile(srcPath, targetPath);
                     if (!result)
                     {
@@ -62,7 +62,7 @@ namespace Game.Editor
                 foreach (var assembly in aotAssemblies)
                 {
                     var srcPath = Path.Combine(srcDir, assembly.EndsWith(".dll") ? assembly : $"{assembly}.dll");
-                    var targetPath = Path.Combine(targetDir, $"{assembly}.bytes");
+                    var targetPath = Path.Combine(targetDir, $"{assembly}{UtilityEditor.Settings.HybridCLRSettings.AssemblyAssetExtension}");
                     var result = UtilityEditor.IO.CopyFile(srcPath, targetPath);
                     if (!result)
                     {

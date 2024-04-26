@@ -4,12 +4,15 @@
     <type fullname="Game.GameEntry" preserve="all" />
   </assembly>
   <assembly fullname="GameFramework">
+    <type fullname="GameFramework.Fsm.IFsm`1" preserve="all" />
     <type fullname="GameFramework.GameFrameworkLogLevel" preserve="all" />
+    <type fullname="GameFramework.Procedure.IProcedureManager" preserve="all" />
     <type fullname="GameFramework.Resource.LoadAssetCallbacks" preserve="all" />
     <type fullname="GameFramework.Resource.LoadAssetFailureCallback" preserve="all" />
     <type fullname="GameFramework.Resource.LoadAssetSuccessCallback" preserve="all" />
     <type fullname="GameFramework.Resource.LoadAssetUpdateCallback" preserve="all" />
     <type fullname="GameFramework.Resource.LoadResourceStatus" preserve="all" />
+    <type fullname="GameFramework.Variable" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.CoreModule">
     <type fullname="UnityEngine.GameObject" preserve="all" />
@@ -18,6 +21,7 @@
     <type fullname="UnityEngine.Vector3" preserve="all" />
   </assembly>
   <assembly fullname="UnityGameFramework.Runtime">
+    <type fullname="UnityGameFramework.Runtime.DataNodeComponent" preserve="all" />
     <type fullname="UnityGameFramework.Runtime.Log" preserve="all" />
     <type fullname="UnityGameFramework.Runtime.ResourceComponent" preserve="all" />
   </assembly>

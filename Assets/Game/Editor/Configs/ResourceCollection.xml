@@ -3,6 +3,7 @@
   <ResourceCollection>
     <Resources>
       <Resource Name="Assemblies" LoadType="0" Packed="True" />
+      <Resource Name="Configs" LoadType="0" Packed="True" />
       <Resource Name="Res" LoadType="0" Packed="True" />
     </Resources>
     <Assets>
@@ -13,6 +14,7 @@
       <Asset Guid="6dc83f5fd45e0f44ba41cf75cbea9ed9" ResourceName="Res" />
       <Asset Guid="8b5f9a1ad07322444bbe74e94902d4eb" ResourceName="Res" />
       <Asset Guid="bee40e17502df53468a56405bf33a170" ResourceName="Assemblies" />
+      <Asset Guid="c39aacf238bdf95489506b547734eb6d" ResourceName="Configs" />
       <Asset Guid="d587dc76e07962345839b394d18137be" ResourceName="Assemblies" />
     </Assets>
   </ResourceCollection>

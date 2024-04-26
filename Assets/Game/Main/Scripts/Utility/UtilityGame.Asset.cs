@@ -6,9 +6,14 @@ namespace Game
     {
         public static partial class Asset
         {
-            public static string GetSettingAsset(string assetName)
+            public static string GetHybridCLRSettingsAsset()
             {
-                return Utility.Text.Format("Assets/Game/Hotfix/Settings/{0}.asset", assetName);
+                return "Assets/Game/Hotfix/Configs/HybridCLRSettings.asset";
+            }
+
+            public static string GetBuildInfoSettingsAsset()
+            {
+                return "Assets/Game/Main/Configs/BuildInfoSettings.asset";
             }
         }
     }

@@ -7,7 +7,6 @@ namespace Game.Editor
         public static class Settings
         {
             private static HybridCLRSettings _HybridCLRSettings;
-
             public static HybridCLRSettings HybridCLRSettings
             {
                 get
@@ -19,13 +18,34 @@ namespace Game.Editor
                     return _HybridCLRSettings;
                 }
             }
-
             private static HybridCLRSettings GetHybridCLRSettings()
             {
-                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<HybridCLRSettings>(UtilityGame.Asset.GetSettingAsset("HybridCLRSettings"));
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<HybridCLRSettings>(UtilityGame.Asset.GetHybridCLRSettingsAsset());
                 if (asset == null)
                 {
                     throw new System.Exception("HybridCLRSettings.asset not found");
+                }
+                return asset;
+            }
+
+            private static BuildInfoSettings _BuildInfoSettings;
+            public static BuildInfoSettings BuildInfoSettings
+            {
+                get
+                {
+                    if (_BuildInfoSettings == null)
+                    {
+                        _BuildInfoSettings = GetBuildInfoSettings();
+                    }
+                    return _BuildInfoSettings;
+                }
+            }
+            private static BuildInfoSettings GetBuildInfoSettings()
+            {
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<BuildInfoSettings>(UtilityGame.Asset.GetBuildInfoSettingsAsset());
+                if (asset == null)
+                {
+                    throw new System.Exception("BuildInfoSettings.asset not found");
                 }
                 return asset;
             }

@@ -22,45 +22,23 @@ namespace Game.Main
 
             m_UpdateResourcesComplete = false;
             m_UpdateCount = procedureOwner.GetData<VarInt32>("UpdateResourceCount");
-            procedureOwner.RemoveData("UpdateResourceCount");
             m_UpdateTotalCompressedLength = procedureOwner.GetData<VarInt64>("UpdateResourceTotalCompressedLength");
-            procedureOwner.RemoveData("UpdateResourceTotalCompressedLength");
             m_UpdateSuccessCount = 0;
             m_UpdateLengthData.Clear();
-            //m_UpdateResourceForm = null;
+            procedureOwner.RemoveData("UpdateResourceCount");
+            procedureOwner.RemoveData("UpdateResourceTotalCompressedLength");
 
             GameEntry.Event.Subscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
             GameEntry.Event.Subscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
             GameEntry.Event.Subscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
             GameEntry.Event.Subscribe(ResourceUpdateFailureEventArgs.EventId, OnResourceUpdateFailure);
 
-            // if (Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork)
-            // {
-            //     GameEntry.UI.OpenDialog(new DialogParams
-            //     {
-            //         Mode = 2,
-            //         Title = GameEntry.Localization.GetString("UpdateResourceViaCarrierDataNetwork.Title"),
-            //         Message = GameEntry.Localization.GetString("UpdateResourceViaCarrierDataNetwork.Message"),
-            //         ConfirmText = GameEntry.Localization.GetString("UpdateResourceViaCarrierDataNetwork.UpdateButton"),
-            //         OnClickConfirm = StartUpdateResources,
-            //         CancelText = GameEntry.Localization.GetString("UpdateResourceViaCarrierDataNetwork.QuitButton"),
-            //         OnClickCancel = delegate (object userData) { UnityGameFramework.Runtime.GameEntry.Shutdown(ShutdownType.Quit); },
-            //     });
-
-            //     return;
-            // }
 
             StartUpdateResources(null);
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
-            // if (m_UpdateResourceForm != null)
-            // {
-            //     Object.Destroy(m_UpdateResourceForm.gameObject);
-            //     m_UpdateResourceForm = null;
-            // }
-
             GameEntry.Event.Unsubscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
             GameEntry.Event.Unsubscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
             GameEntry.Event.Unsubscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
