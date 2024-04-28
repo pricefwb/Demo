@@ -29,18 +29,18 @@ namespace Game.Main
             m_NeedUpdateVersion = false;
             m_VersionInfo = null;
 
-            GameEntry.Event.Subscribe(WebRequestSuccessEventArgs.EventId, OnWebRequestSuccess);
-            GameEntry.Event.Subscribe(WebRequestFailureEventArgs.EventId, OnWebRequestFailure);
+            GameEntryMain.Event.Subscribe(WebRequestSuccessEventArgs.EventId, OnWebRequestSuccess);
+            GameEntryMain.Event.Subscribe(WebRequestFailureEventArgs.EventId, OnWebRequestFailure);
 
-            string checkVersionUrl = Utility.Text.Format("{0}/{1}", GameEntry.BuiltinData.BuildInfo.GetHotfixUrl(), GameEntry.BuiltinData.BuildInfo.VersionFile);
+            string checkVersionUrl = Utility.Text.Format("{0}/{1}", GameEntryMain.BuiltinData.BuildInfo.GetHotfixUrl(), GameEntryMain.BuiltinData.BuildInfo.VersionFile);
             Debug.Log($"checkVersionUrl {checkVersionUrl}");
-            GameEntry.WebRequest.AddWebRequest(checkVersionUrl, this);
+            GameEntryMain.WebRequest.AddWebRequest(checkVersionUrl, this);
         }
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
-            GameEntry.Event.Unsubscribe(WebRequestSuccessEventArgs.EventId, OnWebRequestSuccess);
-            GameEntry.Event.Unsubscribe(WebRequestFailureEventArgs.EventId, OnWebRequestFailure);
+            GameEntryMain.Event.Unsubscribe(WebRequestSuccessEventArgs.EventId, OnWebRequestSuccess);
+            GameEntryMain.Event.Unsubscribe(WebRequestFailureEventArgs.EventId, OnWebRequestFailure);
 
             base.OnLeave(procedureOwner, isShutdown);
         }
@@ -89,10 +89,10 @@ namespace Game.Main
             Log.Info("Latest game version is '{0} ({1})', local game version is '{2} ({3})'.", m_VersionInfo.LatestGameVersion, m_VersionInfo.InternalGameVersion.ToString(), Version.GameVersion, Version.InternalGameVersion.ToString());
 
             // 设置资源更新下载地址
-            GameEntry.Resource.UpdatePrefixUri = GameEntry.BuiltinData.BuildInfo.GetHotfixUrl();
+            GameEntryMain.Resource.UpdatePrefixUri = GameEntryMain.BuiltinData.BuildInfo.GetHotfixUrl();
 
             m_CheckVersionComplete = true;
-            m_NeedUpdateVersion = GameEntry.Resource.CheckVersionList(m_VersionInfo.InternalResourceVersion) == CheckVersionListResult.NeedUpdate;
+            m_NeedUpdateVersion = GameEntryMain.Resource.CheckVersionList(m_VersionInfo.InternalResourceVersion) == CheckVersionListResult.NeedUpdate;
         }
 
         private void OnWebRequestFailure(object sender, GameEventArgs e)
@@ -110,7 +110,7 @@ namespace Game.Main
         {
             string url = null;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-            url = GameEntry.BuiltinData.BuildInfo.WindowsAppUrl;
+            url = GameEntryMain.BuiltinData.BuildInfo.WindowsAppUrl;
 #elif UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
             url = GameEntry.BuiltinData.BuildInfo.MacOSAppUrl;
 #elif UNITY_IOS

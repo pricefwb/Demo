@@ -8,7 +8,6 @@ using GameFramework.Resource;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 using System;
-using UnityEngine.Windows.Speech;
 using System.Collections.Generic;
 
 namespace Game.Main
@@ -17,7 +16,6 @@ namespace Game.Main
     {
         HybridCLRSettings m_HybridCLRSettings = null;
         Dictionary<string, TextAsset> m_AssemblyAssetDict = new Dictionary<string, TextAsset>();
-
         void Clear()
         {
             m_AssemblyAssetDict.Clear();
@@ -60,7 +58,7 @@ namespace Game.Main
         //STEP1
         void LoadHybridCLRSettings()
         {
-            GameEntry.Resource.LoadAsset(UtilityGame.Asset.GetHybridCLRSettingsAsset(), typeof(HybridCLRSettings), new LoadAssetCallbacks(OnLoadHybridCLRSettingsSuccess, OnLoadAssetFail));
+            GameEntryMain.Resource.LoadAsset(UtilityMain.Asset.GetHybridCLRSettingsAsset(), typeof(HybridCLRSettings), new LoadAssetCallbacks(OnLoadHybridCLRSettingsSuccess, OnLoadAssetFail));
         }
 
         void OnLoadHybridCLRSettingsSuccess(string assetName, object asset, float duration, object userData)
@@ -78,13 +76,13 @@ namespace Game.Main
                 foreach (string name in m_HybridCLRSettings.HotfixAssemblies)
                 {
                     string assetName = Utility.Text.Format("{0}/{1}{2}", m_HybridCLRSettings.HotfixAssembliesDirectory, name, m_HybridCLRSettings.AssemblyAssetExtension);
-                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
+                    GameEntryMain.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
                 }
 
                 foreach (string name in m_HybridCLRSettings.AOTMetaAssemblies)
                 {
                     string assetName = Utility.Text.Format("{0}/{1}{2}", m_HybridCLRSettings.AOTMetaAssembliesDirectory, name, m_HybridCLRSettings.AssemblyAssetExtension);
-                    GameEntry.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
+                    GameEntryMain.Resource.LoadAsset(assetName, new LoadAssetCallbacks(OnLoadAssemblyAssetSuccess, OnLoadAssetFail), name);
                 }
             }
             else
@@ -145,7 +143,23 @@ namespace Game.Main
             StartGame(mainAssembly);
         }
 
+
+
         //STEP4
+        public static List<Assembly> GetHotfixAssemblies(List<string> hotfixAssemblyNames)
+        {
+            var hotfixAssemblies = new List<Assembly>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var name = Utility.Text.Format("{0}.dll", assembly.GetName().Name);
+                if (hotfixAssemblyNames.Contains(name))
+                {
+                    hotfixAssemblies.Add(assembly);
+                }
+            }
+            return hotfixAssemblies;
+        }
+
         void StartGame(Assembly mainAssembly)
         {
             if (mainAssembly == null)
@@ -168,7 +182,16 @@ namespace Game.Main
                 return;
             }
 
-            mainMethod?.Invoke(null, null);
+            var hotfixAssemblies = GetHotfixAssemblies(m_HybridCLRSettings.HotfixAssemblies);
+            Log.Info($"HotfixAssemblies count:{hotfixAssemblies.Count}");
+            if (hotfixAssemblies.Count != m_HybridCLRSettings.HotfixAssemblies.Count)
+            {
+                Log.Error("Please check HybridCLRSettings.asset file's HotfixAssemblies collection field to ensure that the hotfix assembly has been collected.");
+                return;
+            }
+
+            object[] objects = new object[] { new object[] { hotfixAssemblies } };
+            mainMethod.Invoke(mainClass, objects);
         }
     }
 }

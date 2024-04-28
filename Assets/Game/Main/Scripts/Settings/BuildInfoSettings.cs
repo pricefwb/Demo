@@ -56,7 +56,7 @@ namespace Game
         }
         public string GetHotfixUrl()
         {
-            return $"{GetServerInfo().HotfixUrl}/{UtilityGame.Platform.GetRuntimePlatformName()}";
+            return $"{GetServerInfo().HotfixUrl}/{UtilityMain.Platform.GetRuntimePlatformName()}";
         }
 
         [Header("版本文件名")]

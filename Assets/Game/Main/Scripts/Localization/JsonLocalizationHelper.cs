@@ -15,7 +15,7 @@ namespace Game.Main
         {
             try
             {
-                string currentLanguage = GameEntry.Localization.Language.ToString();
+                string currentLanguage = GameEntryMain.Localization.Language.ToString();
 
                 List<LocalizationSerializableObject> localizationSerializableObjects = JsonMapper.ToObject<List<LocalizationSerializableObject>>(dictionaryString);
 

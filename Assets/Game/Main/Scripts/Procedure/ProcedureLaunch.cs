@@ -31,7 +31,7 @@ namespace Game.Main
 
             // 默认字典：加载默认字典文件 Assets/GameMain/Configs/DefaultDictionary.xml
             // 此字典文件记录了资源更新前使用的各种语言的字符串，会随 App 一起发布，故不可更新
-            GameEntry.BuiltinData.InitDefaultDictionary();
+            GameEntryMain.BuiltinData.InitDefaultDictionary();
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
@@ -44,20 +44,20 @@ namespace Game.Main
 
         private void InitLanguageSettings()
         {
-            if (GameEntry.Base.EditorResourceMode && GameEntry.Base.EditorLanguage != Language.Unspecified)
+            if (GameEntryMain.Base.EditorResourceMode && GameEntryMain.Base.EditorLanguage != Language.Unspecified)
             {
                 // 编辑器资源模式直接使用 Inspector 上设置的语言
-                GameEntry.Setting.SetInt(Constant.Setting.Language, (int)GameEntry.Base.EditorLanguage);
-                GameEntry.Setting.Save();
+                GameEntryMain.Setting.SetInt(Constant.Setting.Language, (int)GameEntryMain.Base.EditorLanguage);
+                GameEntryMain.Setting.Save();
                 return;
             }
 
-            Language language = GameEntry.Localization.Language;
-            if (GameEntry.Setting.HasSetting(Constant.Setting.Language))
+            Language language = GameEntryMain.Localization.Language;
+            if (GameEntryMain.Setting.HasSetting(Constant.Setting.Language))
             {
                 try
                 {
-                    string languageString = GameEntry.Setting.GetString(Constant.Setting.Language);
+                    string languageString = GameEntryMain.Setting.GetString(Constant.Setting.Language);
                     language = (Language)Enum.Parse(typeof(Language), languageString);
                 }
                 catch
@@ -73,24 +73,24 @@ namespace Game.Main
                 // 若是暂不支持的语言，则使用英语
                 language = Language.English;
 
-                GameEntry.Setting.SetString(Constant.Setting.Language, language.ToString());
-                GameEntry.Setting.Save();
+                GameEntryMain.Setting.SetString(Constant.Setting.Language, language.ToString());
+                GameEntryMain.Setting.Save();
             }
 
-            GameEntry.Localization.Language = language;
+            GameEntryMain.Localization.Language = language;
             Log.Info("Init language settings complete, current language is '{0}'.", language.ToString());
         }
 
         private void InitCurrentVariant()
         {
-            if (GameEntry.Base.EditorResourceMode)
+            if (GameEntryMain.Base.EditorResourceMode)
             {
                 // 编辑器资源模式不使用 AssetBundle，也就没有变体了
                 return;
             }
 
             string currentVariant = null;
-            switch (GameEntry.Localization.Language)
+            switch (GameEntryMain.Localization.Language)
             {
                 case Language.English:
                     currentVariant = "en-us";
@@ -113,7 +113,7 @@ namespace Game.Main
                     break;
             }
 
-            GameEntry.Resource.SetCurrentVariant(currentVariant);
+            GameEntryMain.Resource.SetCurrentVariant(currentVariant);
             Log.Info("Init current variant complete.");
         }
 

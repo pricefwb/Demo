@@ -76,6 +76,10 @@ namespace Game.Editor
                 HybridCLRUtility.Builder.Build(UtilityEditor.GetBuildTarget(platform));
                 ResourceRuleEditorUtility.RefreshResourceCollection();
             }
+            else
+            {
+                HybridCLRUtility.SyncSetting.SyncAll(UtilityEditor.GetBuildTarget(platform));
+            }
         }
 
         /// <summary>

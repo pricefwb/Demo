@@ -20,7 +20,7 @@ namespace Game.Editor
             }
             private static HybridCLRSettings GetHybridCLRSettings()
             {
-                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<HybridCLRSettings>(UtilityGame.Asset.GetHybridCLRSettingsAsset());
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<HybridCLRSettings>(UtilityMain.Asset.GetHybridCLRSettingsAsset());
                 if (asset == null)
                 {
                     throw new System.Exception("HybridCLRSettings.asset not found");
@@ -42,7 +42,7 @@ namespace Game.Editor
             }
             private static BuildInfoSettings GetBuildInfoSettings()
             {
-                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<BuildInfoSettings>(UtilityGame.Asset.GetBuildInfoSettingsAsset());
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<BuildInfoSettings>(UtilityMain.Asset.GetBuildInfoSettingsAsset());
                 if (asset == null)
                 {
                     throw new System.Exception("BuildInfoSettings.asset not found");

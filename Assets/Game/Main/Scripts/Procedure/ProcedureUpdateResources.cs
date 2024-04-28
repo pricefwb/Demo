@@ -28,10 +28,10 @@ namespace Game.Main
             procedureOwner.RemoveData("UpdateResourceCount");
             procedureOwner.RemoveData("UpdateResourceTotalCompressedLength");
 
-            GameEntry.Event.Subscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
-            GameEntry.Event.Subscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
-            GameEntry.Event.Subscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
-            GameEntry.Event.Subscribe(ResourceUpdateFailureEventArgs.EventId, OnResourceUpdateFailure);
+            GameEntryMain.Event.Subscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
+            GameEntryMain.Event.Subscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
+            GameEntryMain.Event.Subscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
+            GameEntryMain.Event.Subscribe(ResourceUpdateFailureEventArgs.EventId, OnResourceUpdateFailure);
 
 
             StartUpdateResources(null);
@@ -39,10 +39,10 @@ namespace Game.Main
 
         protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
         {
-            GameEntry.Event.Unsubscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
-            GameEntry.Event.Unsubscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
-            GameEntry.Event.Unsubscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
-            GameEntry.Event.Unsubscribe(ResourceUpdateFailureEventArgs.EventId, OnResourceUpdateFailure);
+            GameEntryMain.Event.Unsubscribe(ResourceUpdateStartEventArgs.EventId, OnResourceUpdateStart);
+            GameEntryMain.Event.Unsubscribe(ResourceUpdateChangedEventArgs.EventId, OnResourceUpdateChanged);
+            GameEntryMain.Event.Unsubscribe(ResourceUpdateSuccessEventArgs.EventId, OnResourceUpdateSuccess);
+            GameEntryMain.Event.Unsubscribe(ResourceUpdateFailureEventArgs.EventId, OnResourceUpdateFailure);
 
             base.OnLeave(procedureOwner, isShutdown);
         }
@@ -67,7 +67,7 @@ namespace Game.Main
             // }
 
             Log.Info("Start update resources...");
-            GameEntry.Resource.UpdateResources(OnUpdateResourcesComplete);
+            GameEntryMain.Resource.UpdateResources(OnUpdateResourcesComplete);
         }
 
         private void RefreshProgress()
@@ -79,7 +79,7 @@ namespace Game.Main
             }
 
             float progressTotal = (float)currentTotalUpdateLength / m_UpdateTotalCompressedLength;
-            string descriptionText = GameEntry.Localization.GetString("UpdateResource.Tips", m_UpdateSuccessCount.ToString(), m_UpdateCount.ToString(), GetByteLengthString(currentTotalUpdateLength), GetByteLengthString(m_UpdateTotalCompressedLength), progressTotal, GetByteLengthString((int)GameEntry.Download.CurrentSpeed));
+            string descriptionText = GameEntryMain.Localization.GetString("UpdateResource.Tips", m_UpdateSuccessCount.ToString(), m_UpdateCount.ToString(), GetByteLengthString(currentTotalUpdateLength), GetByteLengthString(m_UpdateTotalCompressedLength), progressTotal, GetByteLengthString((int)GameEntryMain.Download.CurrentSpeed));
             //m_UpdateResourceForm.SetProgress(progressTotal, descriptionText);
         }
 

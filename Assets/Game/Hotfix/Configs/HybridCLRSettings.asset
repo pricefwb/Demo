@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aff339518cf0f5b4aaf39e52ec50f680, type: 3}
   m_Name: HybridCLRSettings
   m_EditorClassIdentifier: 
-  m_HotfixMainAssemblyName: Game.Hotfix
-  m_HotfixEntryClass: Game.Hotfix.HotfixEntry
+  m_HotfixMainAssemblyName: Game.Hotfix.Framework
+  m_HotfixEntryClass: Game.Hotfix.Framework.GameMain
   m_HotfixEntryMethod: Start
   m_AssemblyAssetExtension: .bytes
   m_HotfixAssembliesDirectory: Assets/Game/Hotfix/Assemblies/Hotfix
   m_AOTMetaAssembliesDirectory: Assets/Game/Hotfix/Assemblies/AOTMeta
   Enable: 1
   HotfixAssemblies:
-  - Game.Hotfix.dll
+  - Game.Hotfix.Framework.dll
   AOTMetaAssemblies:
   - GameFramework.dll
   - UnityEngine.CoreModule.dll

@@ -20,7 +20,7 @@ namespace Game.Main
             m_UpdateResourceCount = 0;
             m_UpdateResourceTotalCompressedLength = 0L;
 
-            GameEntry.Resource.CheckResources(OnCheckResourcesComplete);
+            GameEntryMain.Resource.CheckResources(OnCheckResourcesComplete);
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)

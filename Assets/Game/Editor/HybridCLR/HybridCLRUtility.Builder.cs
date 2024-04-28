@@ -24,7 +24,7 @@ namespace Game.Editor
             {
                 CompileDllCommand.CompileDll(target);
 
-                SyncSettings.SyncAll(target);
+                HybridCLRUtility.SyncSetting.SyncAll(target);
 
                 CopyAssemblies.CopyHotfixAndAOTAssemblies(target);
 
