@@ -54,7 +54,10 @@ namespace Game.Editor
             m_VersionInfo.LatestGameVersion = applicableGameVersion;
             m_VersionInfo.InternalGameVersion = internalResourceVersion;
 
-            ResourceRuleEditorUtility.RefreshResourceCollection();
+            GameBuildEventHandlerDataTable.OnPreprocessAllPlatforms(platforms, outputFullSelected);
+            GameBuildEventHandlerHybridCLR.OnPreprocessAllPlatforms(platforms, outputFullSelected);
+
+            //ResourceRuleEditorUtility.RefreshResourceCollection();
         }
 
         /// <summary>
@@ -71,15 +74,10 @@ namespace Game.Editor
 
         public void OnPreprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath)
         {
-            if (HybridCLR.Editor.SettingsUtil.Enable)
-            {
-                HybridCLRUtility.Builder.Build(UtilityEditor.GetBuildTarget(platform));
-                ResourceRuleEditorUtility.RefreshResourceCollection();
-            }
-            else
-            {
-                HybridCLRUtility.SyncSetting.SyncAll(UtilityEditor.GetBuildTarget(platform));
-            }
+            GameBuildEventHandlerDataTable.OnPreprocessPlatform(platform);
+            GameBuildEventHandlerHybridCLR.OnPreprocessPlatform(platform);
+
+            ResourceRuleEditorUtility.RefreshResourceCollection();
         }
 
         /// <summary>
@@ -158,6 +156,9 @@ namespace Game.Editor
         /// <param name="isSuccess">是否生成成功。</param>
         public void OnPostprocessPlatform(Platform platform, string workingPath, bool outputPackageSelected, string outputPackagePath, bool outputFullSelected, string outputFullPath, bool outputPackedSelected, string outputPackedPath, bool isSuccess)
         {
+            GameBuildEventHandlerDataTable.OnPostprocessPlatform(platform, outputPackageSelected, outputFullSelected, outputPackedSelected, CommitResourcesPath);
+            GameBuildEventHandlerHybridCLR.OnPostprocessPlatform(platform, outputPackageSelected, outputFullSelected, outputPackedSelected, CommitResourcesPath);
+
             string platformName = UtilityEditor.GetPlatformName(platform);
             string commitPath = Path.Combine(CommitResourcesPath, platformName);
             UtilityEditor.IO.EnsureDirectoryExistsAndEmpty(commitPath);

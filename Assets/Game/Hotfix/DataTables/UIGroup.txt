@@ -1,0 +1,8 @@
+#	UI组配置表			
+#	Id		Name	Depth
+#	int		string	int
+#	配置编号	策划备注	UI组名字	深度
+	1001	主菜单	View	1
+	1002	弹窗	Popup	2
+	1003	Waiting	Waiting	3
+	1004	Toast	Toast	4

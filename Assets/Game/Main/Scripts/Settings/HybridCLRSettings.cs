@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace Game
+namespace Game.Main
 {
     [CreateAssetMenu(fileName = "HybridCLRSettings", menuName = "MyTool/Settings/HybridCLRSettings")]
     public class HybridCLRSettings : ScriptableObject

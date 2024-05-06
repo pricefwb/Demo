@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using GameFramework.Procedure;
+using GameFramework.Resource;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 
 namespace Game.Hotfix.Framework
 {
     public static class GameMain
     {
-
         public static void Start(object[] objects)
         {
             var hotfixAssemblies = (List<Assembly>)objects[0];
@@ -17,6 +18,7 @@ namespace Game.Hotfix.Framework
 
             var procedureManager = GameFramework.GameFrameworkEntry.GetModule<IProcedureManager>();
             var procedureTypes = GetProcedureTypes(hotfixAssemblies);
+            Log.Info("Procedure count: {0}", procedureTypes.Count);
             var procedures = new ProcedureBase[procedureTypes.Count];
             for (var i = 0; i < procedureTypes.Count; i++)
             {
@@ -29,7 +31,7 @@ namespace Game.Hotfix.Framework
             }
 
             procedureManager.Initialize(GameFramework.GameFrameworkEntry.GetModule<GameFramework.Fsm.IFsmManager>(), procedures);
-            procedureManager.StartProcedure<ProcedureGameEntry>();
+            procedureManager.StartProcedure<ProcedureInitFramework>();
         }
 
         private static List<Type> GetProcedureTypes(List<Assembly> assemblies)

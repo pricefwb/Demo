@@ -10,7 +10,7 @@ namespace Game.Editor.SpriteCollection
             foreach (var guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
-                Hotfix.Framework.SpriteCollection collection = AssetDatabase.LoadAssetAtPath<Hotfix.Framework.SpriteCollection>(path);
+                Game.Hotfix.Framework.SpriteCollection.SpriteCollection collection = AssetDatabase.LoadAssetAtPath<Game.Hotfix.Framework.SpriteCollection.SpriteCollection>(path);
                 collection.Pack();
             }
 

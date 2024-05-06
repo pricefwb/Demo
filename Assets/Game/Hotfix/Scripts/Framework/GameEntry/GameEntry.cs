@@ -1,18 +1,24 @@
-using System.Collections.Generic;
-using System.Reflection;
+using Game.Hotfix.Framework.Await;
 using UnityEngine;
 
-namespace Game.Hotfix.Framework
+// namespace Game.Hotfix.Framework
+// {
+/// <summary>
+/// 游戏入口。
+/// </summary>
+public partial class GameEntry : MonoBehaviour
 {
-    /// <summary>
-    /// 游戏入口。
-    /// </summary>
-    public partial class GameEntry : MonoBehaviour
+    public static bool IsInitiated { get; private set; } = false;
+    void Start()
     {
-        void Start()
-        {
-            InitBuiltinComponents();
-            InitCustomComponents();
-        }
+        InitBuiltinComponents();
+        InitCustomComponents();
+
+        AwaitableExtensions.SubscribeEvent();
+
+        IsInitiated = true;
     }
 }
+
+
+

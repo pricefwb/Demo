@@ -1,4 +1,5 @@
-using GameFramework;
+using Game.Hotfix.Business;
+using Game.Main;
 
 namespace Game.Editor
 {
@@ -6,49 +7,55 @@ namespace Game.Editor
     {
         public static class Settings
         {
-            private static HybridCLRSettings _HybridCLRSettings;
+            private static HybridCLRSettings m_HybridCLRSettings;
             public static HybridCLRSettings HybridCLRSettings
             {
                 get
                 {
-                    if (_HybridCLRSettings == null)
+                    if (m_HybridCLRSettings == null)
                     {
-                        _HybridCLRSettings = GetHybridCLRSettings();
+                        m_HybridCLRSettings = GetSettings<HybridCLRSettings>(UtilityMain.Asset.GetHybridCLRSettingsAsset());
                     }
-                    return _HybridCLRSettings;
+                    return m_HybridCLRSettings;
                 }
-            }
-            private static HybridCLRSettings GetHybridCLRSettings()
-            {
-                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<HybridCLRSettings>(UtilityMain.Asset.GetHybridCLRSettingsAsset());
-                if (asset == null)
-                {
-                    throw new System.Exception("HybridCLRSettings.asset not found");
-                }
-                return asset;
             }
 
-            private static BuildInfoSettings _BuildInfoSettings;
+            private static BuildInfoSettings m_BuildInfoSettings;
             public static BuildInfoSettings BuildInfoSettings
             {
                 get
                 {
-                    if (_BuildInfoSettings == null)
+                    if (m_BuildInfoSettings == null)
                     {
-                        _BuildInfoSettings = GetBuildInfoSettings();
+                        m_BuildInfoSettings = GetSettings<BuildInfoSettings>(UtilityMain.Asset.GetBuildInfoSettingsAsset());
                     }
-                    return _BuildInfoSettings;
+                    return m_BuildInfoSettings;
                 }
             }
-            private static BuildInfoSettings GetBuildInfoSettings()
+
+            private static DataTableSettings m_DataTableSettings;
+            public static DataTableSettings DataTableSettings
             {
-                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<BuildInfoSettings>(UtilityMain.Asset.GetBuildInfoSettingsAsset());
+                get
+                {
+                    if (m_DataTableSettings == null)
+                    {
+                        m_DataTableSettings = GetSettings<DataTableSettings>(UtilityGame.Settings.DataTableSettingsPath);
+                    }
+                    return m_DataTableSettings;
+                }
+            }
+
+            private static T GetSettings<T>(string path) where T : UnityEngine.Object
+            {
+                var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<T>(path);
                 if (asset == null)
                 {
-                    throw new System.Exception("BuildInfoSettings.asset not found");
+                    throw new System.Exception($"{typeof(T).Name}.asset not found");
                 }
                 return asset;
             }
+
         }
     }
 }

@@ -1,22 +1,22 @@
-﻿using Game.Main;
+﻿using Game.Hotfix.Framework.SpriteCollection;
 using UnityEngine;
 
-namespace Game.Hotfix.Framework
+// namespace Game.Hotfix.Framework
+// {
+/// <summary>
+/// 游戏入口。
+/// </summary>
+public partial class GameEntry : MonoBehaviour
 {
-    /// <summary>
-    /// 游戏入口。
-    /// </summary>
-    public partial class GameEntry : MonoBehaviour
+    public static SpriteCollectionComponent SpriteCollection
     {
-        public static SpriteCollectionComponent SpriteCollection
-        {
-            get;
-            private set;
-        }
+        get;
+        private set;
+    }
 
-        private static void InitCustomComponents()
-        {
-            SpriteCollection = UnityGameFramework.Runtime.GameEntry.GetComponent<SpriteCollectionComponent>();
-        }
+    private static void InitCustomComponents()
+    {
+        SpriteCollection = UnityGameFramework.Runtime.GameEntry.GetComponent<SpriteCollectionComponent>();
     }
 }
+//}
