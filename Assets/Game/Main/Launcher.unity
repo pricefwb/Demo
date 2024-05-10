@@ -302,6 +302,10 @@ PrefabInstance:
       propertyPath: m_AvailableProcedureTypeNames.Array.data[7]
       value: Game.Main.ProcedureUpdateVersion
       objectReference: {fileID: 0}
+    - target: {fileID: 11461470, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
+      propertyPath: m_LocalizationHelperTypeName
+      value: Game.Main.JsonLocalizationHelper
+      objectReference: {fileID: 0}
     - target: {fileID: 11497722, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_ResourceMode
       value: 2

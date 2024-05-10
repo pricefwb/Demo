@@ -8,6 +8,11 @@ using LitJson;
 
 namespace Game.Main
 {
+    public class LocalizationSerializableObject
+    {
+        public string language;
+        public Dictionary<string, string> dic;
+    }
     public class JsonLocalizationHelper : DefaultLocalizationHelper
     {
 
